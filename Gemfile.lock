@@ -1,3 +1,4 @@
+# rubocop:disable Lint/Syntax,
 GEM
   remote: https://rubygems.org/
   specs:
@@ -32,3 +33,5 @@ DEPENDENCIES
 
 BUNDLED WITH
    2.3.22
+
+# rubocop:enable Lint/Syntax, Lint/Syntax
