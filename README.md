@@ -1,38 +1,37 @@
 ![](https://img.shields.io/badge/Microverse-blueviolet)
 
-# Analytical Chemistry Digital Summit 2022
+# School Library
 
-> Interactive website for the Analytical Chemistry Digital Summit 2022
+> This is a school library management system in which you can add students and teachers to the system with different permisions.
 
 
 ## Built With
 
-- Major languages: html, css, javascript
-- Frameworks: Bootstrap 5
-- Technologies used
+- Major languages: Ruby
 
 ## Live Demo 
 
-[Live Demo Link](https://jaferidrees.github.io/Html_css_Capstone/)
+[coming soon]()
 
 
 ## Getting Started
-
--Visit the [Live Demo] above.
 
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
+- Installed local copy of Ruby 3.0 or higher
+
 ### Setup
+
+- Make a local copy of the application.
 
 ### Install
 
+- Run bundle install command
+
 ### Usage
 
-### Run tests
-
-### Deployment
 
 
 
@@ -49,7 +48,7 @@ To get a local copy up and running follow these simple example steps.
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](../../issues/).
+Feel free to check the [issues page](https://github.com/jaferIdrees/school_library/issues).
 
 ## Show your support
 
@@ -57,7 +56,7 @@ Give a ⭐️ if you like this project!
 
 ## Acknowledgments
 
-- Special acknowledgement and thanks goes to Cindy Shin in Behance who invented the original design. @https://www.behance.net/adagio07
+- Special acknowledgement to Microverse team and Code Reviewers
 
 ## 📝 License
 
