@@ -1,5 +1,7 @@
-require_relative 'classes/student'
-require_relative 'classes/teacher'
+require_relative '../classes/student'
+require_relative '../classes/teacher'
+require_relative '../classes/book'
+require_relative '../classes/rental'
 
 # State class to store app's state
 class State
@@ -28,7 +30,8 @@ class State
     name = gets.chomp
     print 'Has parent permission?[Y/N]:'
     permission = gets.chomp
-    @people << Student.new(_, name, age, permission == Y)
+    @people << Student.new(age, name, permission.upcase == 'Y')
+    puts 'Student added successfully'
   end
   
   def create_teacher
@@ -44,24 +47,82 @@ class State
   def create_book
     print 'Title:'
     title = gets.chomp
+    print 'Author:'
+    author = gets.chomp
+    @books << Book.new(title, author)
+    puts 'Book crteated successfully'
+  end
+
+  def list_people(indexed = false)
+    @people.each_with_index { |person, index|
+      print "#{index}) " if indexed
+      print "[#{person.class}] Name: #{person.name}, ID: #{person.id}, Age:#{person.age}\n"
+  }
+  end
+  
+  def list_books(indexed = false)
+    @books.each_with_index { |book, index|
+      print "#{index}) " if indexed
+      print "Title: #{book.title}, Author: #{book.author}\n"
+  }
+  end
+
+  def create_rental
+    return 'You didn\'t have any person and/or book added yet; rental cant be created!' if @people.size == 0 || @books== 0
+
+    puts 'Select a book from the following list by number'
+    list_books(true)
+    book = gets.chomp
     
+    puts 'Select a person from the following list by number'
+    list_people(true)
+    person = gets.chomp
+
+    print 'Date:'
+    date = gets.chomp
+    Rental.new(date, @books[book.to_i], @people[person.to_i])
+
+    'Rental created successfully'
+  end
+
+  def rental_list
+    print 'ID of person'
+    person_id = gets.chomp
+    person = @people.select { |p| p.id == person_id.to_i }
+    puts person
+    if person.size.zero?
+      puts 'Selected person not found'
+      return
+    end
+    puts 'Rentals:'
+    person[0].rentals.each { |rental| puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}" }
   end
 
   # Method to handle user choice
   def handle_choice(choice)
     case choice
-    when 1
+    when 'List all books'
+      list_books
+      main_menu
     when 'List all people'
-      @people.each { |perosn| }
+      list_people
+      main_menu
     when 'Create a person'
       print 'Do you want to create a student (1) ot a teacher (2)?[Input a number]:'
       person_choice = gets.chomp
-      person_choice == 1 ? state.create_student : state.create_teacher
+      person_choice == '1' ? create_student : create_teacher
+      main_menu
     when 'Create a book'
       create_book
-    when 5
-    when 6
-    when 7
+      main_menu
+    when 'Create a rental'
+      puts create_rental
+      main_menu
+    when 'List all rentals for a person id'
+      rental_list
+      main_menu
+    when 'Exit'
+      exit(0)
     else
       puts 'Invalid choice'
       main_menu
@@ -69,13 +130,12 @@ class State
   end
 
   def main_menu
-    puts 'Welcome to School library App!'
     puts ''
     puts 'Please choose an option by entering a number:'
     choices.each { |key, value| puts "#{key}:#{value}" }
     print 'Please enter a number:'
     choice = gets.chomp
-    handle_choice(choice.to_i)
+    handle_choice(choices[choice.to_i])
     puts choices[choice.to_i]
   end
 
@@ -86,6 +146,7 @@ end
 
 # Main method
 def main
+  puts 'Welcome to School library App!'
   app = State.new
   app.run
 end
