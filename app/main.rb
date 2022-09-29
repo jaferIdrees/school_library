@@ -5,7 +5,6 @@ require_relative '../classes/rental'
 
 # State class to store app's state
 class State
-
   def initialize
     @books = []
     @people = []
@@ -33,7 +32,7 @@ class State
     @people << Student.new(age, name, permission.upcase == 'Y')
     puts 'Student added successfully'
   end
-  
+
   def create_teacher
     print 'Age:'
     age = gets.chomp
@@ -57,23 +56,26 @@ class State
     @people.each_with_index { |person, index|
       print "#{index}) " if indexed
       print "[#{person.class}] Name: #{person.name}, ID: #{person.id}, Age:#{person.age}\n"
-  }
+    }
   end
-  
+
   def list_books(indexed = false)
     @books.each_with_index { |book, index|
       print "#{index}) " if indexed
       print "Title: #{book.title}, Author: #{book.author}\n"
-  }
+    }
   end
 
   def create_rental
-    return 'You didn\'t have any person and/or book added yet; rental cant be created!' if @people.size == 0 || @books== 0
+    if @people.size.zero? || @books.size.zero?
+      return 'You didn\'t have any person and/or
+       book added yet; rental cant be created!'
+    end
 
     puts 'Select a book from the following list by number'
     list_books(true)
     book = gets.chomp
-    
+
     puts 'Select a person from the following list by number'
     list_people(true)
     person = gets.chomp
@@ -95,7 +97,9 @@ class State
       return
     end
     puts 'Rentals:'
-    person[0].rentals.each { |rental| puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}" }
+    person[0].rentals.each { |rental|
+      puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}"
+    }
   end
 
   # Method to handle user choice
