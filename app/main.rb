@@ -4,7 +4,7 @@ require_relative '../classes/book'
 require_relative '../classes/rental'
 
 def choices
-  choices = {
+  {
     1 => 'List all books',
     2 => 'List all people',
     3 => 'Create a person',
@@ -57,6 +57,7 @@ class State
       print "#{index}) " if indexed
       print "[#{person.class}] Name: #{person.name}, ID: #{person.id}, Age:#{person.age}\n"
     end
+    main_menu
   end
 
   def list_books(indexed: false)
@@ -64,6 +65,7 @@ class State
       print "#{index}) " if indexed
       print "Title: #{book.title}, Author: #{book.author}\n"
     end
+    main_menu
   end
 
   def create_rental
@@ -91,7 +93,9 @@ class State
     person_id = gets.chomp
     person = @people.select { |p| p.id == person_id.to_i }
     puts 'Rentals:'
-    person[0].rentals.each { |rental| puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}"}
+    person[0].rentals.each do |rental|
+      puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}"
+    end
   end
 
   def create_person
@@ -105,10 +109,8 @@ class State
     case choice
     when 'List all books'
       list_books
-      main_menu
     when 'List all people'
       list_people
-      main_menu
     when 'Create a person'
       create_person
       main_menu
@@ -121,11 +123,8 @@ class State
     when 'List all rentals for a person id'
       rental_list
       main_menu
-    when 'Exit'
-      exit(0)
     else
-      puts 'Invalid choice'
-      main_menu
+      exit(0)
     end
   end
 
