@@ -3,23 +3,23 @@ require_relative '../classes/teacher'
 require_relative '../classes/book'
 require_relative '../classes/rental'
 
+def choices
+  choices = {
+    1 => 'List all books',
+    2 => 'List all people',
+    3 => 'Create a person',
+    4 => 'Create a book',
+    5 => 'Create a rental',
+    6 => 'List all rentals for a person id',
+    7 => 'Exit'
+  }
+end
+
 # State class to store app's state
 class State
   def initialize
     @books = []
     @people = []
-  end
-
-  def choices
-    @choices = {
-      1 => 'List all books',
-      2 => 'List all people',
-      3 => 'Create a person',
-      4 => 'Create a book',
-      5 => 'Create a rental',
-      6 => 'List all rentals for a person id',
-      7 => 'Exit'
-    }
   end
 
   def create_student
@@ -29,7 +29,7 @@ class State
     name = gets.chomp
     print 'Has parent permission?[Y/N]:'
     permission = gets.chomp
-    @people << Student.new(age, name, permission.upcase == 'Y')
+    @people << Student.new(age, name, parent_permission: permission.upcase == 'Y')
     puts 'Student added successfully'
   end
 
@@ -52,32 +52,31 @@ class State
     puts 'Book crteated successfully'
   end
 
-  def list_people(indexed = false)
-    @people.each_with_index { |person, index|
+  def list_people(indexed: false)
+    @people.each_with_index do |person, index|
       print "#{index}) " if indexed
       print "[#{person.class}] Name: #{person.name}, ID: #{person.id}, Age:#{person.age}\n"
-    }
+    end
   end
 
-  def list_books(indexed = false)
-    @books.each_with_index { |book, index|
+  def list_books(indexed: false)
+    @books.each_with_index do |book, index|
       print "#{index}) " if indexed
       print "Title: #{book.title}, Author: #{book.author}\n"
-    }
+    end
   end
 
   def create_rental
     if @people.size.zero? || @books.size.zero?
-      return 'You didn\'t have any person and/or
-       book added yet; rental cant be created!'
+      return 'You didn\'t have any person and/or book added yet; rental cant be created!'
     end
 
     puts 'Select a book from the following list by number'
-    list_books(true)
+    list_books(indexed: true)
     book = gets.chomp
 
     puts 'Select a person from the following list by number'
-    list_people(true)
+    list_people(indexed: true)
     person = gets.chomp
 
     print 'Date:'
@@ -91,15 +90,14 @@ class State
     print 'ID of person'
     person_id = gets.chomp
     person = @people.select { |p| p.id == person_id.to_i }
-    puts person
-    if person.size.zero?
-      puts 'Selected person not found'
-      return
-    end
     puts 'Rentals:'
-    person[0].rentals.each { |rental|
-      puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}"
-    }
+    person[0].rentals.each { |rental| puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}"}
+  end
+
+  def create_person
+    print 'Do you want to create a student (1) ot a teacher (2)?[Input a number]:'
+    person_choice = gets.chomp
+    person_choice == '1' ? create_student : create_teacher
   end
 
   # Method to handle user choice
@@ -112,9 +110,7 @@ class State
       list_people
       main_menu
     when 'Create a person'
-      print 'Do you want to create a student (1) ot a teacher (2)?[Input a number]:'
-      person_choice = gets.chomp
-      person_choice == '1' ? create_student : create_teacher
+      create_person
       main_menu
     when 'Create a book'
       create_book
