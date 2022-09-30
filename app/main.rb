@@ -92,6 +92,10 @@ class State
     print 'ID of person'
     person_id = gets.chomp
     person = @people.select { |p| p.id == person_id.to_i }
+    if person.size.zero?
+      puts 'Person not found'
+      return
+    end
     puts 'Rentals:'
     person[0].rentals.each do |rental|
       puts "Date: #{rental.date}, Book \"#{rental.book.title}\" by #{rental.book.author}"
