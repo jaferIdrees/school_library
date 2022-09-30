@@ -70,7 +70,7 @@ class State
 
   def create_rental
     if @people.size.zero? || @books.size.zero?
-      return 'You didn\'t have any person and/or book added yet; rental cant be created!'
+      return 'You don\'t have any person and/or book added yet; rental cant be created!'
     end
 
     puts 'Select a book from the following list by number'
@@ -105,7 +105,7 @@ class State
   def create_person
     print 'Do you want to create a student (1) ot a teacher (2)?[Input a number]:'
     person_choice = gets.chomp
-    person_choice == '1' ? create_student : create_teacher
+    person_choice == 1 ? create_student : create_teacher
   end
 
   # Method to handle user choice
