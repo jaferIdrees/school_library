@@ -57,7 +57,6 @@ class State
       print "#{index}) " if indexed
       print "[#{person.class}] Name: #{person.name}, ID: #{person.id}, Age:#{person.age}\n"
     end
-    main_menu
   end
 
   def list_books(indexed: false)
@@ -65,7 +64,6 @@ class State
       print "#{index}) " if indexed
       print "Title: #{book.title}, Author: #{book.author}\n"
     end
-    main_menu
   end
 
   def create_rental
@@ -113,8 +111,10 @@ class State
     case choice
     when 'List all books'
       list_books
+      main_menu
     when 'List all people'
       list_people
+      main_menu
     when 'Create a person'
       create_person
       main_menu
