@@ -57,7 +57,7 @@ class State
       print "#{index}) " if indexed
       print "[#{person.class}] Name: #{person.name}, ID: #{person.id}, Age:#{person.age}\n"
     end
-    main_menu
+    main_menu unless indexed
   end
 
   def list_books(indexed: false)
@@ -65,7 +65,7 @@ class State
       print "#{index}) " if indexed
       print "Title: #{book.title}, Author: #{book.author}\n"
     end
-    main_menu
+    main_menu unless indexed
   end
 
   def create_rental
