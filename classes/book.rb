@@ -9,6 +9,13 @@ class Book
     @rentals = []
   end
 
+  def as_hash
+    {
+      'Title' => @title,
+      'Author' => @author
+    }
+  end
+
   def add_rental(rental)
     @rentals << rental
     rental.book = self

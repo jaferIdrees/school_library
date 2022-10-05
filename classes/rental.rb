@@ -9,4 +9,12 @@ class Rental
     book.rentals << self
     person.add_rental(self)
   end
+
+  def as_hash
+    {
+      'date' => @date,
+      'book' => @book.as_hash,
+      'person' => @person.as_hash
+    }
+  end
 end

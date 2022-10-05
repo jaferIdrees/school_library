@@ -1,3 +1,5 @@
+require 'fileutils'
+require 'json'
 require_relative '../classes/student'
 require_relative '../classes/teacher'
 require_relative '../classes/book'
@@ -20,6 +22,7 @@ class State
   def initialize
     @books = []
     @people = []
+    @rentals = []
   end
 
   def create_student
@@ -40,7 +43,7 @@ class State
     name = gets.chomp
     print 'Specialization:'
     specialization = gets.chomp
-    @people << Teacher.new(specialization, name, age)
+    @people << Teacher.new(specialization, age, name)
   end
 
   def create_book
@@ -83,7 +86,7 @@ class State
 
     print 'Date:'
     date = gets.chomp
-    Rental.new(date, @books[book.to_i], @people[person.to_i])
+    @rentals << Rental.new(date, @books[book.to_i], @people[person.to_i])
 
     'Rental created successfully'
   end
@@ -108,6 +111,72 @@ class State
     person_choice == '1' ? create_student : create_teacher
   end
 
+  def save_data
+    FileUtils.mkdir_p('./app_data/')
+    FileUtils.cd('./app_data/') do
+      FileUtils.rm_f('books.json')
+      FileUtils.rm_f('people.json')
+      FileUtils.rm_f('rentals.json')
+      FileUtils.touch('books.json')
+      FileUtils.touch('people.json')
+      FileUtils.touch('rentals.json')
+
+      # generate json object
+      books_json = []
+      @books.each { |book| books_json << JSON.generate(book.as_hash) }
+      people_json = []
+      @people.each { |person| people_json << JSON.generate(person.as_hash) }
+      rentals_json = []
+      @rentals.each { |rental| rentals_json << JSON.generate(rental.as_hash) }
+
+      # write data to their respective files
+      File.write('books.json', books_json)
+      File.write('people.json', people_json)
+      File.write('rentals.json', rentals_json)
+    end
+  end
+
+  def read_data
+    if File.exists?('./app_data/books.json')
+      books = []
+      File.foreach('./app_data/books.json') { |book| books << JSON.parse(book)}
+      books.each { |book| book.each {|book| @books << Book.new(JSON.parse(book)['Title'], JSON.parse(book)['Author'])}}
+    end
+    
+    if File.exists?('./app_data/people.json')
+      puts 'read people'
+      people = []
+      File.foreach('./app_data/people.json') { |line| people << JSON.parse(line)}
+    
+      people.each do |people| people.each do
+        |person|
+        if !person['classroom'].nil?
+          @people << Student.new(JSON.parse(person)['age'], JSON.parse(person)['name'], JSON.parse(person)['parent_permission'], id: JSON.parse(person)['id'])
+        else
+          @people << Teacher.new(JSON.parse(person)['specialization'], JSON.parse(person)['age'], JSON.parse(person)['name'], parent_permission: JSON.parse(person)['parent_permission'], id: JSON.parse(person)['id'])
+        end
+      end
+      end
+    end
+
+    if File.exists?('./app_data/rentals.json')
+        rentals = JSON.parse(File.read('./app_data/rentals.json'))
+        rentals.each do
+          |rental|
+          r = JSON.parse(rental)
+          person = @people.select { |person| person.id.to_i == r['person']['id'].to_i}
+          puts person[0]
+
+          b = r['book']['Title'] + r['book']['Author']
+          book = @books.select { |book| (book.title + book.author) == b}
+          puts book[0]
+          puts r['date']
+          @rentals << Rental.new(r['date'], book[0], person[0])
+
+        end
+    end
+  end
+
   # Method to handle user choice
   def handle_choice(choice)
     case choice
@@ -117,32 +186,34 @@ class State
       list_people
     when 'Create a person'
       create_person
-      main_menu
     when 'Create a book'
       create_book
-      main_menu
     when 'Create a rental'
       puts create_rental
-      main_menu
     when 'List all rentals for a person id'
       rental_list
-      main_menu
+    when 'Exit'
+      save_data
     else
-      exit(0)
+      puts 'Invalid choice, please try again:'
     end
   end
 
   def main_menu
-    puts ''
-    puts 'Please choose an option by entering a number:'
-    choices.each { |key, value| puts "#{key}:#{value}" }
-    print 'Please enter a number:'
-    choice = gets.chomp
-    handle_choice(choices[choice.to_i])
-    puts choices[choice.to_i]
+    loop do
+      puts ''
+      puts 'Please choose an option by entering a number:'
+      choices.each { |key, value| puts "#{key}:#{value}" }
+      print 'Please enter a number:'
+      choice = gets.chomp
+      handle_choice(choices[choice.to_i])
+      break if choice == '7'
+      puts choices[choice.to_i]
+    end
   end
 
   def run
+    read_data
     main_menu
   end
 end
